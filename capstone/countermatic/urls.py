@@ -7,6 +7,6 @@ urlpatterns = [
     path('register/', register, name="register"),
     path('login/', login_user, name='login'),
     path('logout/', logout_user, name='logout'),
-    # path('<str:username>/', user_profile, name="user_polls"),
+    # path('<str:username>/', user_profile, name="user_profile"),
 
 ]
