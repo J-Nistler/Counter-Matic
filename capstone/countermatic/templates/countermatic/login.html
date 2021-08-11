@@ -1,0 +1,14 @@
+{% extends 'countermatic/base.html' %} 
+{% load static %}
+
+{% block content %}
+
+<form action="{% url 'countermatic:login' %}" method="POST">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Log In</button>
+    <a href="{% url 'countermatic:register' %}">or signup</a>
+  </form>
+
+{% endblock %}
