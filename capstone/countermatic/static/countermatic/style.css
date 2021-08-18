@@ -85,13 +85,13 @@ nav {
   scroll-snap-align: start;
 }
 
-.pokedex {
+.viewport {
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--white);
   min-height: 75vh;
-  width: 60%;
+  width: 70%;
   border-radius: 25px;
 }
 
