@@ -123,3 +123,25 @@ def add_vendor(request):
 #     }
 
 #     return render(request, 'countermatic/vendors.html', context)
+
+def harvest (request):
+
+    Vendors = Vendor.objects.all()
+
+    context = {
+        'vendors': Vendors,
+        'user' : request.user
+    }
+
+    return render(request, 'countermatic/harvest.html', context)
+
+def report (request, vendor_id):
+
+    vendor = Vendor.objects.filter(id = vendor_id)
+
+    context = {
+        'vendor': vendor,
+        'user' : request.user
+    }
+
+    return render(request, 'countermatic/harvest/report.html', context)
