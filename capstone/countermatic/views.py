@@ -145,3 +145,7 @@ def report (request, vendor_id):
     }
 
     return render(request, 'countermatic/harvest/report.html', context)
+
+def dashboard (request):
+
+    return render(request, 'countermatic/dashboard.html')
