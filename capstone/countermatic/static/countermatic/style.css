@@ -95,6 +95,23 @@ nav {
   border-radius: 25px;
 }
 
+img {
+  max-width: 30% !important;
+  height: auto;
+}
+
+#reportrange {
+  background: #fff;
+  cursor: pointer;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+/* .badge .rounded-pill .bg-danger{
+  visibility: visible;
+} */
+
 /* RESPONSIVE DESIGN */
 
 @media only screen and (max-width: 1024px) {

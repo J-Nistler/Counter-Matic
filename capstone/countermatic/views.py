@@ -1,9 +1,11 @@
-from django.http.response import HttpResponse, HttpResponseRedirect
+from django.http.response import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Vendor
+import datetime, requests, json
+import pycounter
 
 # Create your views here.
 def home_page(request):
@@ -86,8 +88,12 @@ def add_vendor(request):
 
     form = request.POST
 
+    url = form['sushi_url']
+    if url[-1] != "/":
+        url += "/"
+
     vendor.vendor_name = form['vendor_name']
-    vendor.sushi_url = form['sushi_url']
+    vendor.sushi_url = url
     vendor.requestor_id = form['requestor_id']
     vendor.requestor_name = form['requestor_name']
     vendor.customer_id = form['customer_id']
@@ -124,28 +130,150 @@ def add_vendor(request):
 
 #     return render(request, 'countermatic/vendors.html', context)
 
+@login_required
+def get_vendors(request):
+    Vendors = Vendor.objects.filter(user=request.user)
+
+    json = {
+        'vendors': []
+    }
+
+    for vendor in Vendors:
+
+        vendor_params = {
+            'id': vendor.id,
+            'base_url':vendor.sushi_url,
+        }
+
+        if vendor.customer_id:
+            cust_id = vendor.customer_id
+            vendor_params["customer_id"] = cust_id
+        if vendor.requestor_id:
+            request_id = vendor.requestor_id
+            vendor_params["requestor_id"] = request_id
+        if vendor.api_key:
+            api_key = vendor.api_key
+            vendor_params["api_key"] = api_key
+
+        json['vendors'].append(vendor_params)
+
+    return JsonResponse(json)
+
 def harvest (request):
 
-    Vendors = Vendor.objects.all()
+    if request.method == "GET":
+        Vendors = Vendor.objects.all()
 
-    context = {
-        'vendors': Vendors,
-        'user' : request.user
-    }
+        context = {
+            'vendors': Vendors,
+            'user' : request.user
+        }
 
-    return render(request, 'countermatic/harvest.html', context)
+        # report = pycounter.sushi.sushi5.get_sushi_stats_raw(wsdl_url='https://sushi.ebscohost.com/R5', start_date=datetime.date(2021,1,1), end_date=datetime.date(2021,1,31), requestor_id="141df502-0993-42c0-b38a-f330da742751", customer_reference="s9010767", report="dr", release=5)
+        # print("Report Done!")
 
-def report (request, vendor_id):
 
-    vendor = Vendor.objects.filter(id = vendor_id)
+        return render(request, 'countermatic/harvest.html', context)
 
-    context = {
-        'vendor': vendor,
-        'user' : request.user
-    }
+    # User submits form
+    elif request.method == "POST":
+        # Get form data
+        form = request.POST
+        vendor = form['vendordrop']
+        selected_vendor = Vendor.objects.filter(id=vendor)
+        report = form['reportdrop']
+        datefrom = form['datefrom']
+        fromdateobject = datetime.datetime.strptime(datefrom, '%m/%d/%Y').strftime('%Y-%m-%d')
+        dateto = form['dateto']
+        todateobject = datetime.datetime.strptime(dateto, '%m/%d/%Y').strftime('%Y-%m-%d')
+        base_url = selected_vendor[0].sushi_url
+        route = form['radioRouter']
 
-    return render(request, 'countermatic/harvest/report.html', context)
+        params = {}
+
+        if selected_vendor[0].customer_id:
+            cust_id = selected_vendor[0].customer_id
+            params["customer_id"] = cust_id
+        if selected_vendor[0].requestor_id:
+            request_id = selected_vendor[0].requestor_id
+            params["requestor_id"] = request_id
+        if selected_vendor[0].api_key:
+            api_key = selected_vendor[0].api_key
+            params["api_key"] = api_key
+
+        request_url = f"{base_url}reports/{report}?begin_date={fromdateobject}&end_date={todateobject}" 
+        
+        for key, value in params.items():
+            request_url += f"&{key}={value}"
+            
+        response = requests.get(request_url)
+        json_response = response.json()
+
+
+        print("Report Done!")
+        print("Starting Parse")
+
+        # final_data = {}
+
+        # Get Databases
+        # database_list = []
+        # for item in json_response["Report_Items"]:
+        #     if item.get('Database') not in database_list:
+        #         database_list.append(item.get('Database'))
+        # # Get Metrics
+        # for database in database_list:
+        #     metric_list = []
+        #     for item in json_response["Report_Items"]:
+        #         if item.get('Database') == database:
+        #             for metric in item['Performance'][0]['Instance']:
+        #                 metric_list.append(metric['Metric_Type'])
+        #         final_data[database] = metric_list
+        
+        final_py_data = []
+        
+
+        for database in json_response["Report_Items"]:
+            metric_list = []
+            for metric in database['Performance'][0]['Instance']:
+                metric_list.append(metric['Metric_Type'])
+            for metric in metric_list:
+                new_database = {}
+                new_database['platform'] = database['Platform']
+                new_database['database'] = database['Database']
+                new_database['metric'] = metric
+                for i in range (len(database["Performance"])):
+                    date_key = database["Performance"][i]["Period"]["Begin_Date"]
+                    date_key = datetime.datetime.strptime(date_key, '%Y-%m-%d').strftime('%m/%d/%y')
+                    for j in range (len(database["Performance"][i]["Instance"])):
+                        if database["Performance"][i]["Instance"][j]["Metric_Type"] == metric:
+                            data_value = str(database["Performance"][i]["Instance"][j]["Count"])
+                    new_database[date_key] = data_value
+                final_py_data.append(new_database)
+
+
+        
+        print("Parsing Done!")
+        print("Starting Dump!")
+        print(final_py_data)
+        # final_data = json.dumps(final_py_data)
+        print("Dumped!")
+        context = {
+            'json_response': final_py_data,
+        }
+
+        if route == "radioTable":
+            route_url = 'countermatic/table.html'
+        else:
+            route_url = 'countermatic/dashboard.html'
+
+        # return HttpResponseRedirect(reverse('countermatic:harvest'))
+        return render(request, route_url, context)
 
 def dashboard (request):
 
     return render(request, 'countermatic/dashboard.html')
+
+def table (request):
+
+    return render(request, 'countermatic/table.html')
+

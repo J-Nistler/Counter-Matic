@@ -3,53 +3,77 @@
 {% block content %}
 
 <div class="vendorlist">
-    <h4>Select a Vendor</h4>
-  <select id="vendor-drop" class="form-select" aria-label="Default select example">
-    <option selected>Select a Vendor</option>
-    {% for vendor in user.vendors.all%}
-    <option value="{{vendor.id}}">{{vendor.vendor_name}}</option>
-    {% endfor %}
-  </select>
-  <h4>Select a Report</h4>
-  <select id="report-drop" class="form-select" aria-label="Default select example">
-    <option selected>Select a Report</option>
-    <option value="dr">DR</option>
-    <option value="dr_d1">DR_D1</option>
-  </select>
-  <h4>Select a Date Range</h4>
-  
-  <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-    <i class="fa fa-calendar"></i>&nbsp;
-    <span></span> <i class="fa fa-caret-down"></i>
+  <h4 id="vendorHeading">Select a Vendor</h4>
+  <form action="{% url 'countermatic:harvest' %}" method="POST" name="harvestForm" onsubmit="return validateSubmit()">
+    {% csrf_token %}
+    <select
+      name="vendordrop"
+      id="vendor-drop"
+      class="form-select"
+      aria-label="Vendor Dropdown"
+    >
+      <option selected>Select a Vendor</option>
+      {% for vendor in user.vendors.all%}
+      <option value="{{vendor.id}}">{{vendor.vendor_name}}</option>
+      {% endfor %}
+    </select>
+    <h4 id="reportHeading">Select a Report</h4>
+    <select
+      name="reportdrop"
+      id="report-drop"
+      class="form-select"
+      aria-label="Report Dropdown"
+      disabled
+    >
+      <option selected>Select a Report</option>
+    </select>
+    <h4>Date From</h4>
+
+    <input id="datefrom" class="form-control" type="text" name="datefrom" value="" />
+
+    <script>
+    $(function() {
+      $('input[name="datefrom"]').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        minYear: 1901,
+        maxYear: parseInt(moment().format('YYYY'),10)
+      });
+    });
+    </script>
+    <h4>Date To</h4>
+
+    <input id="dateto" class="form-control" type="text" name="dateto" value="" />
+
+    <script>
+    $(function() {
+      $('input[name="dateto"]').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        minYear: 1901,
+        maxYear: parseInt(moment().format('YYYY'),10)
+      });
+    });
+    </script>
+    
+    <h4>Delivery Method</h4>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="radioRouter" id="radioTable" value="radioTable" checked>
+      <label class="form-check-label" for="inlineRadio2">Table</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="radioRouter" id="radioCharts" value="radioCharts">
+      <label class="form-check-label" for="inlineRadio3">Charts</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="radioRouter" id="radioDownload" value="radioDownload" disabled>
+      <label class="form-check-label" for="inlineRadio1">Download</label>
+    </div>
+
+    <button id="sub_btn" type="submit" type="button" class="btn btn-primary btn-lg btn-block">
+      Harvest Report
+    </button>
+  </form>
 </div>
-
-<script type="text/javascript">
-$(function() {
-
-    var start = moment().subtract(29, 'days');
-    var end = moment();
-
-    function cb(start, end) {
-        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-    }
-
-    $('#reportrange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-           'Today': [moment(), moment()],
-           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month': [moment().startOf('month'), moment().endOf('month')],
-           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    }, cb);
-    cb(start, end);
-});
-</script>
-
-<button type="button" class="btn btn-primary btn-lg btn-block">Harvest Report</button>
-</div>
-
+<script defer src="{% static 'countermatic/app_harvest.js' %}"></script>
 {% endblock %}

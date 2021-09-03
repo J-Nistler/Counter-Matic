@@ -2,16 +2,27 @@
 {% load static %}
 
 {% block content %}
-<div>
-<select name="" id="select-vendor">
-</select>
-<select name="" id="select-database">
-</select>
+<div class="container">
+    <div class="row">
+        <select class="form-select" name="" id="select-vendor">
+        </select>
+    <select class="form-select" name="" id="select-database">
+    </select>
 </div>
-<div>
-<div class="container-highcharts" id="chart1"></div>
-<div class="container-highcharts" id="chart2"></div>
-<div class="container-highcharts" id="chart3"></div>
-<div class="container-highcharts" id="chart4"></div>
+<div class="row">
+    <div class="col"><div class="container-highcharts" id="chart1"></div></div>
+    <div class="col"><div class="container-highcharts" id="chart2"></div></div>
 </div>
+<div class="row">
+    <div class="col"><div class="container-highcharts" id="chart3"></div></div>
+    <div class="col"><div class="container-highcharts" id="chart4"></div></div>
+</div>
+<!-- <div class="container-highcharts" id="chart1"></div>
+<div class="container-highcharts" id="chart2"></div> -->
+<!-- <div class="container-highcharts" id="chart3"></div>
+<div class="container-highcharts" id="chart4"></div> -->
+</div>
+{{ json_response|json_script:"json_response" }}
+<script src="{% static 'countermatic/data.js' %}"></script>
+<script defer src="{% static 'countermatic/app_charts.js' %}"></script>
 {% endblock %}

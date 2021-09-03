@@ -3,7 +3,7 @@
 {% block content %}
 <div class='vendorform1'>
   <div class='vendorform'>
-<form action="{% url 'countermatic:add_vendor'%}" method="POST">
+<form action="{% url 'countermatic:add-vendor'%}" method="POST">
 {% csrf_token %}
     <div class="form-row">
       <div class="form-group">
@@ -62,12 +62,14 @@
         <thead class="thead-dark">
           <tr>
             <th scope="col">Vendor</th>
+            <th scope="col"><button id= "button-delete" type="button" class="btn btn-secondary btn-sm">Edit</button></th>
           </tr>
         </thead>
         <tbody>
           {% for vendor in user.vendors.all%}
           <tr>
               <td>{{vendor.vendor_name}}</td>
+              <td><span class="badge rounded-pill bg-danger">Delete</span></td>              
           </tr>
           {% endfor %}
         </tbody>
