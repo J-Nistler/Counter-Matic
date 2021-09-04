@@ -7,11 +7,15 @@ from .models import Vendor
 import datetime, requests, json
 import pycounter
 
-# Create your views here.
+# -----------------------------------------------------
+# Homepage
+# -----------------------------------------------------
 def home_page(request):
     return render(request, 'countermatic/index.html')
 
+# -----------------------------------------------------
 # User Management
+# -----------------------------------------------------
 def register(request):
     print('METHOD', request.method)
     if request.method == "GET":
@@ -57,26 +61,16 @@ def logout_user(request):
     logout(request)
     return HttpResponseRedirect(reverse('countermatic:home'))
 
-# User Profile
-@login_required
-def user_profile(request, username):
-
-    user = get_object_or_404(User, username=request.user)
-
-    context = {
-        'user': user,
-    }
-    return render(request, 'countermatic/user_profile.html', context)
-
+# -----------------------------------------------------
 # Configure Vendors
+# -----------------------------------------------------
 @login_required
 def vendors(request):
 
-    Vendors = Vendor.objects.all()
+    Vendors = Vendor.objects.filter(user=request.user)
 
     context = {
         'vendors': Vendors,
-        'user' : request.user
     }
 
     return render(request, 'countermatic/vendors.html', context)
@@ -109,27 +103,20 @@ def add_vendor(request):
 
     return HttpResponseRedirect(reverse('countermatic:vendors'))
 
-# @login_required
-# def delete_vendor(request):
+@login_required
+def delete_vendor(request):
+    form = request.POST
 
-#     # vendor.delete()
+    vendor_id = form['vendor_id']
 
-#     return HttpResponseRedirect(reverse('countermatic:vendors', args=[request.user.username]))
+    Vendors = Vendor.objects.filter(user=request.user)
+    selected_vendor = Vendors.get(id=vendor_id)
+    selected_vendor.delete()
+    return HttpResponseRedirect(reverse('countermatic:vendors'))
 
-# Request Reports
-# @login_required
-# def reports(request):
-
-#     user = get_object_or_404(User, username=username)
-#     Vendors = Vendor.objects.all()
-
-#     context = {
-#         'vendors': Vendors,
-#         'user' : user
-#     }
-
-#     return render(request, 'countermatic/vendors.html', context)
-
+# -----------------------------------------------------
+# Harvest Reports
+# -----------------------------------------------------
 @login_required
 def get_vendors(request):
     Vendors = Vendor.objects.filter(user=request.user)
@@ -168,10 +155,6 @@ def harvest (request):
             'vendors': Vendors,
             'user' : request.user
         }
-
-        # report = pycounter.sushi.sushi5.get_sushi_stats_raw(wsdl_url='https://sushi.ebscohost.com/R5', start_date=datetime.date(2021,1,1), end_date=datetime.date(2021,1,31), requestor_id="141df502-0993-42c0-b38a-f330da742751", customer_reference="s9010767", report="dr", release=5)
-        # print("Report Done!")
-
 
         return render(request, 'countermatic/harvest.html', context)
 
@@ -212,26 +195,9 @@ def harvest (request):
 
         print("Report Done!")
         print("Starting Parse")
-
-        # final_data = {}
-
-        # Get Databases
-        # database_list = []
-        # for item in json_response["Report_Items"]:
-        #     if item.get('Database') not in database_list:
-        #         database_list.append(item.get('Database'))
-        # # Get Metrics
-        # for database in database_list:
-        #     metric_list = []
-        #     for item in json_response["Report_Items"]:
-        #         if item.get('Database') == database:
-        #             for metric in item['Performance'][0]['Instance']:
-        #                 metric_list.append(metric['Metric_Type'])
-        #         final_data[database] = metric_list
         
         final_py_data = []
         
-
         for database in json_response["Report_Items"]:
             metric_list = []
             for metric in database['Performance'][0]['Instance']:
@@ -250,13 +216,6 @@ def harvest (request):
                     new_database[date_key] = data_value
                 final_py_data.append(new_database)
 
-
-        
-        print("Parsing Done!")
-        print("Starting Dump!")
-        print(final_py_data)
-        # final_data = json.dumps(final_py_data)
-        print("Dumped!")
         context = {
             'json_response': final_py_data,
         }
@@ -266,8 +225,11 @@ def harvest (request):
         else:
             route_url = 'countermatic/dashboard.html'
 
-        # return HttpResponseRedirect(reverse('countermatic:harvest'))
         return render(request, route_url, context)
+
+# -----------------------------------------------------
+# Visualize Reports
+# -----------------------------------------------------
 
 def dashboard (request):
 

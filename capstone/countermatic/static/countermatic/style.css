@@ -8,6 +8,16 @@
 
 }
 
+
+@font-face {
+  font-family: 'neon_sansregular';
+  src: url('neonsans-webfont.woff2') format('woff2'),
+       url('neonsans-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -28,6 +38,11 @@ nav {
   min-height: 8vh;
   max-height: 125px;
   background-color: var(--pokelb);
+}
+
+.logo h1{
+  font-family: "neon_sansregular", "Ubuntu", sans-serif;
+  font-size: 4rem;
 }
 
 .logo {
@@ -70,10 +85,11 @@ nav {
 
 /* MAIN BODY */
 
-.container {
-  height: 92vh;
+.container-table {
+  max-height: 70vh;
   scroll-snap-type: y mandatory;
   overflow-y: scroll;
+  overflow-x: scroll;
 }
 
 .main {
@@ -107,10 +123,6 @@ img {
   border: 1px solid #ccc;
   width: 100%;
 }
-
-/* .badge .rounded-pill .bg-danger{
-  visibility: visible;
-} */
 
 /* RESPONSIVE DESIGN */
 

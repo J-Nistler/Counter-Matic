@@ -2,13 +2,26 @@
 {% load static %}
 
 {% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="d-flex justify-content-center" style="padding-top: 20px;"><img src="{% static 'countermatic/img/log-in.png' %}" alt="" style="height: 10rem;"></div></div>
+      <div class="d-flex justify-content-center"><h3>Log In</h3></div>
+  </div>
+  <div class="row">
+    <div class="col"></div>
+    <div class="col">
+      <form action="{% url 'countermatic:login' %}" method="POST">
+          {% csrf_token %}
+          <input class="form-control" type="text" name="username" placeholder="Username" required>
+          <input class="form-control" type="password" name="password" placeholder="Password" required>
+          <button class="btn btn-primary" type="submit">Log In</button>
+          <a href="{% url 'countermatic:register' %}">or signup</a>
+        </form>
+    </div>
+    <div class="col"></div>
+  </div>
 
-<form action="{% url 'countermatic:login' %}" method="POST">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <button type="submit">Log In</button>
-    <a href="{% url 'countermatic:register' %}">or signup</a>
-  </form>
+</div>
 
 {% endblock %}

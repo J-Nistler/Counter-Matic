@@ -1,12 +1,13 @@
 <!-- Navigation -->
 <nav>
-  <div class="logo"><h1>COUNTER-MATIC</h1></div>
+  <div class="logo"><h1>COUNTERMATIC</h1></div>
   <ul class="nav-links">
+    <li><a href="{% url 'countermatic:home' %}">Home</a></li>
     {% if request.user.is_anonymous %}
     <li><a href="{% url 'countermatic:register' %}">Register</a></li>
     <li><a href="{% url 'countermatic:login' %}">Log In</a></li>
     {% else %}
-    <li><a href="{% url 'countermatic:user_profile' request.user %}">{{request.user}}</a></li>   
+    <li><a>{{request.user}}</a></li>   
     <li><a href="{% url 'countermatic:logout' %}">Log Out</a></li>
     {% endif %}
 

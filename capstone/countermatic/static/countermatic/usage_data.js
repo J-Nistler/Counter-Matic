@@ -3709,7 +3709,7 @@ const USAGE = [
   },
   {
     platform: "EBSCO",
-    database: "Fuente Académica",
+    database: "Fuente AcadÃ©mica",
     metric: "Searches_Regular",
     "1/1/19": "1928",
     "2/1/19": "3611",
@@ -3745,7 +3745,7 @@ const USAGE = [
   },
   {
     platform: "EBSCO",
-    database: "Fuente Académica",
+    database: "Fuente AcadÃ©mica",
     metric: "Total_Item_Investigations",
     "1/1/19": "10",
     "2/1/19": "26",
@@ -3781,7 +3781,7 @@ const USAGE = [
   },
   {
     platform: "EBSCO",
-    database: "Fuente Académica",
+    database: "Fuente AcadÃ©mica",
     metric: "Total_Item_Requests",
     "1/1/19": "4",
     "2/1/19": "10",
@@ -9008,7 +9008,7 @@ const USAGE = [
   },
   {
     platform: "ProQuest",
-    database: "American Drama 1714â€“1915",
+    database: "American Drama 1714Ã¢â‚¬â€œ1915",
     metric: "Total_Item_Investigations",
     "1/1/19": "0",
     "2/1/19": "1",
@@ -9044,7 +9044,7 @@ const USAGE = [
   },
   {
     platform: "ProQuest",
-    database: "American Drama 1714â€“1915",
+    database: "American Drama 1714Ã¢â‚¬â€œ1915",
     metric: "Total_Item_Requests",
     "1/1/19": "0",
     "2/1/19": "1",
@@ -9080,7 +9080,7 @@ const USAGE = [
   },
   {
     platform: "ProQuest",
-    database: "American Drama 1714â€“1915",
+    database: "American Drama 1714Ã¢â‚¬â€œ1915",
     metric: "Searches_Regular",
     "1/1/19": "0",
     "2/1/19": "0",
@@ -17774,7 +17774,7 @@ const USAGE = [
   },
   {
     platform: "ProQuest",
-    database: "MEDLINEÂ®",
+    database: "MEDLINEÃ‚Â®",
     metric: "Searches_Regular",
     "1/1/19": "0",
     "2/1/19": "0",
@@ -17810,7 +17810,7 @@ const USAGE = [
   },
   {
     platform: "ProQuest",
-    database: "MEDLINEÂ®",
+    database: "MEDLINEÃ‚Â®",
     metric: "Total_Item_Investigations",
     "1/1/19": "121",
     "2/1/19": "665",
@@ -17846,7 +17846,7 @@ const USAGE = [
   },
   {
     platform: "ProQuest",
-    database: "MEDLINEÂ®",
+    database: "MEDLINEÃ‚Â®",
     metric: "Searches_Automated",
     "1/1/19": "0",
     "2/1/19": "0",
@@ -17882,7 +17882,7 @@ const USAGE = [
   },
   {
     platform: "ProQuest",
-    database: "MEDLINEÂ®",
+    database: "MEDLINEÃ‚Â®",
     metric: "Total_Item_Requests",
     "1/1/19": "1",
     "2/1/19": "0",

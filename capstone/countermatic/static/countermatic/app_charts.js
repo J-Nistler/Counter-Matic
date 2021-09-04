@@ -656,7 +656,3 @@ selectdatabase.addEventListener("change", (e) => {
   });
   renderCharts(data);
 });
-
-
-
-console.log()
