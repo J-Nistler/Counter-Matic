@@ -89,22 +89,3 @@ function validateSubmit() {
       submit_button.appendChild(span);
   }
 }
-
-// -----------------------------------------------------------------//
-// Vendor List
-// -----------------------------------------------------------------//
-
-/*
-Allow user to delete element from the Vendor List
-*/
-// deleteButton.addEventListener("click", function () {
-//   if ((allDeleteButtons[0].style.visibility == "visible")) {
-//     for (var i = 0; i < allDeleteButtons.length; i++) {
-//       allDeleteButtons[i].style.visibility = "hidden";
-//     }
-//   } else {
-//     for (var i = 0; i < allDeleteButtons.length; i++) {
-//       allDeleteButtons[i].style.visibility = "visible";
-//     }
-//   }
-// });

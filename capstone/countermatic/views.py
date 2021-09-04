@@ -1,10 +1,10 @@
 from django.http.response import JsonResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Vendor
-import datetime, requests, json
+import datetime, requests
 import pycounter
 
 # -----------------------------------------------------
@@ -146,6 +146,7 @@ def get_vendors(request):
 
     return JsonResponse(json)
 
+@login_required
 def harvest (request):
 
     if request.method == "GET":
@@ -230,11 +231,11 @@ def harvest (request):
 # -----------------------------------------------------
 # Visualize Reports
 # -----------------------------------------------------
-
+@login_required
 def dashboard (request):
 
     return render(request, 'countermatic/dashboard.html')
-
+@login_required
 def table (request):
 
     return render(request, 'countermatic/table.html')
